@@ -41,7 +41,7 @@ export class ArtistsController {
     const artist = await this.artistsService.findOne(id);
 
     if (!artist) {
-      return new NotFoundException();
+      throw new NotFoundException();
     }
 
     return artist;
@@ -55,7 +55,7 @@ export class ArtistsController {
     const updatedArtist = await this.artistsService.update(id, updateArtistDto);
 
     if (!updatedArtist) {
-      return new NotFoundException();
+      throw new NotFoundException();
     }
 
     return updatedArtist;
@@ -69,8 +69,7 @@ export class ArtistsController {
     const deletedArtist = await this.artistsService.remove(id);
 
     if (!deletedArtist) {
-      res.status(HttpStatus.NOT_FOUND).send();
-      return;
+      throw new NotFoundException();
     }
 
     res.status(HttpStatus.NO_CONTENT).send();

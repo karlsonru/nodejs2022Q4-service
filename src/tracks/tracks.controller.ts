@@ -41,7 +41,7 @@ export class TracksController {
     const track = this.tracksService.findOne(id);
 
     if (!track) {
-      return new NotFoundException();
+      throw new NotFoundException();
     }
 
     return track;
@@ -55,7 +55,7 @@ export class TracksController {
     const updatedTrack = await this.tracksService.update(id, updateTrackDto);
 
     if (!updatedTrack) {
-      return new NotFoundException();
+      throw new NotFoundException();
     }
 
     return updatedTrack;
@@ -69,11 +69,10 @@ export class TracksController {
     const deletedTrack = await this.tracksService.remove(id);
 
     if (deletedTrack === null) {
-      res.status(HttpStatus.NOT_FOUND).send();
-      return;
+      throw new NotFoundException();
     }
 
-    res.status(HttpStatus.NO_CONTENT).send();
+    res.status(HttpStatus.NO_CONTENT).json();
     return;
   }
 }

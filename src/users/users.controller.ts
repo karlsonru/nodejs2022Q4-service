@@ -15,6 +15,7 @@ import {
   NotFoundException,
   ForbiddenException,
   HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -44,7 +45,7 @@ export class UsersController {
     const user = await this.usersService.findOne(id);
 
     if (!user) {
-      return new NotFoundException();
+      throw new NotFoundException();
     }
 
     return user;
@@ -60,9 +61,9 @@ export class UsersController {
 
     if (!updatedUser) {
       if (updatedUser === null) {
-        return new NotFoundException();
+        throw new NotFoundException();
       }
-      return new ForbiddenException();
+      throw new ForbiddenException();
     }
 
     return updatedUser;
@@ -76,11 +77,10 @@ export class UsersController {
     const deletedUser = await this.usersService.remove(id);
 
     if (deletedUser === null) {
-      res.status(HttpStatus.NOT_FOUND).send();
-      return;
+      throw new NotFoundException();
     }
 
-    res.status(HttpStatus.NO_CONTENT).send();
+    res.status(HttpStatus.NO_CONTENT).json();
     return;
   }
 }

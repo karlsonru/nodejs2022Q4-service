@@ -41,7 +41,7 @@ export class AlbumsController {
     const album = await this.albumsService.findOne(id);
 
     if (!album) {
-      return new NotFoundException();
+      throw new NotFoundException();
     }
 
     return album;
@@ -55,7 +55,7 @@ export class AlbumsController {
     const album = await this.albumsService.update(id, updateAlbumDto);
 
     if (!album) {
-      return new NotFoundException();
+      throw new NotFoundException();
     }
 
     return album;
@@ -69,8 +69,7 @@ export class AlbumsController {
     const deletedUser = await this.albumsService.remove(id);
 
     if (deletedUser === null) {
-      res.status(HttpStatus.NOT_FOUND).send();
-      return;
+      throw new NotFoundException();
     }
 
     res.status(HttpStatus.NO_CONTENT).send();
