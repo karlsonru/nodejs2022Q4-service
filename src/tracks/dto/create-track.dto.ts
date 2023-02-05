@@ -1,4 +1,10 @@
-import { IsString, IsNotEmpty, IsNumber, Equals } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsNumber,
+  IsDefined,
+  ValidateIf,
+} from 'class-validator';
 
 export class CreateTrackDto {
   @IsNotEmpty()
@@ -9,9 +15,15 @@ export class CreateTrackDto {
   @IsNumber()
   duration: number;
 
-  @Equals((field) => typeof field === 'string' || typeof field === null)
+  @IsDefined()
+  @ValidateIf((obj) => obj.artistId !== null)
+  @IsNotEmpty()
+  @IsString()
   artistId: string | null;
 
-  @Equals((field) => typeof field === 'string' || typeof field === null)
+  @IsDefined()
+  @ValidateIf((obj) => obj.albumId !== null)
+  @IsNotEmpty()
+  @IsString()
   albumId: string | null;
 }

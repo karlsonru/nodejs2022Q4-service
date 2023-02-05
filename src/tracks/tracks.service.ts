@@ -1,26 +1,50 @@
+import { database } from '../database/database';
 import { Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import { Track } from './entities/track.entity';
 
 @Injectable()
 export class TracksService {
-  create(createTrackDto: CreateTrackDto) {
-    return 'This action adds a new track';
+  private readonly db = database;
+
+  async create(createTrackDto: CreateTrackDto) {
+    const newTrack = new Track(createTrackDto);
+    await this.db.tracks.push(newTrack);
+    return newTrack;
   }
 
-  findAll() {
-    return `This action returns all tracks`;
+  async findAll() {
+    return await this.db.tracks;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} track`;
+  async findOne(id: string) {
+    const track = await this.db.tracks.find((track) => track.id === id);
+    return track;
   }
 
-  update(id: number, updateTrackDto: UpdateTrackDto) {
-    return `This action updates a #${id} track`;
+  async update(id: string, updateTrackDto: UpdateTrackDto) {
+    const idx = await this.db.tracks.findIndex((track) => track.id === id);
+
+    if (idx === -1) {
+      return null;
+    }
+
+    const track = this.db.tracks[idx];
+    for (const [key, value] of Object.entries(updateTrackDto)) {
+      track[key] = value;
+    }
+
+    return track;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} track`;
+  async remove(id: string) {
+    const idx = await this.db.tracks.findIndex((track) => track.id === id);
+
+    if (idx === -1) {
+      return null;
+    }
+
+    return await this.db.tracks.splice(idx, 1);
   }
 }
