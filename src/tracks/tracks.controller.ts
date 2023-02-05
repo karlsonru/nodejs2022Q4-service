@@ -21,7 +21,7 @@ import { UpdateTrackDto } from './dto/update-track.dto';
 import { Response } from 'express';
 
 @UseInterceptors(ClassSerializerInterceptor)
-@Controller('tracks')
+@Controller('track')
 export class TracksController {
   constructor(private readonly tracksService: TracksService) {}
 

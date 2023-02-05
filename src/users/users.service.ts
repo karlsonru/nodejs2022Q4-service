@@ -24,7 +24,7 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = this.db.users.find((user) => user.id === id);
+    const user = await this.db.users.find((user) => user.id === id);
 
     if (!user) return null;
 

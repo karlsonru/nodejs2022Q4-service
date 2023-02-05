@@ -22,7 +22,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Response } from 'express';
 
 @UseInterceptors(ClassSerializerInterceptor)
-@Controller('users')
+@Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

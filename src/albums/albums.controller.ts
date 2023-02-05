@@ -21,7 +21,7 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Response } from 'express';
 
 @UseInterceptors(ClassSerializerInterceptor)
-@Controller('albums')
+@Controller('album')
 export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}
 
