@@ -30,14 +30,12 @@ export class ArtistsService {
 
     const artist = this.db.artists[idx];
 
-    this.db.artists[idx] = new Artist({
-      ...artist,
-      ...updateArtistDto,
-    });
+    for (const [key, value] of Object.entries(updateArtistDto)) {
+      if (!(key in artist) || key === 'id') continue;
+      artist[key] = value;
+    }
 
-    this.db.artists[idx].id = artist.id;
-
-    return this.db.artists[idx];
+    return artist;
   }
 
   async remove(id: string) {

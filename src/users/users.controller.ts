@@ -2,6 +2,8 @@ import {
   Controller,
   Get,
   Post,
+  Put,
+  Res,
   Body,
   Param,
   Delete,
@@ -17,7 +19,6 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { HttpCode, Put, Res } from '@nestjs/common/decorators';
 import { Response } from 'express';
 
 @Controller('users')
@@ -49,6 +50,7 @@ export class UsersController {
     return user;
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Put(':id')
   async update(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -79,5 +81,6 @@ export class UsersController {
     }
 
     res.status(HttpStatus.NO_CONTENT).send();
+    return;
   }
 }
