@@ -12,8 +12,7 @@ import {
   Put,
   UseInterceptors,
   UsePipes,
-  HttpStatus,
-  Res,
+  HttpCode,
 } from '@nestjs/common';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
@@ -62,17 +61,14 @@ export class AlbumsController {
   }
 
   @Delete(':id')
-  async remove(
-    @Param('id', new ParseUUIDPipe()) id: string,
-    @Res() res: Response,
-  ) {
+  @HttpCode(204)
+  async remove(@Param('id', new ParseUUIDPipe()) id: string) {
     const deletedUser = await this.albumsService.remove(id);
 
     if (deletedUser === null) {
       throw new NotFoundException();
     }
 
-    res.status(HttpStatus.NO_CONTENT).send();
     return;
   }
 }

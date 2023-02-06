@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Put,
-  Res,
   Body,
   Param,
   Delete,
@@ -14,7 +13,6 @@ import {
   ClassSerializerInterceptor,
   NotFoundException,
   ForbiddenException,
-  HttpStatus,
   HttpCode,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -70,17 +68,14 @@ export class UsersController {
   }
 
   @Delete(':id')
-  async remove(
-    @Param('id', new ParseUUIDPipe()) id: string,
-    @Res() res: Response,
-  ) {
+  @HttpCode(204)
+  async remove(@Param('id', new ParseUUIDPipe()) id: string) {
     const deletedUser = await this.usersService.remove(id);
 
     if (deletedUser === null) {
       throw new NotFoundException();
     }
 
-    res.status(HttpStatus.NO_CONTENT).json();
     return;
   }
 }

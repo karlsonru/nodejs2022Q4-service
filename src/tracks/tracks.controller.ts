@@ -6,14 +6,13 @@ import {
   Param,
   Delete,
   ClassSerializerInterceptor,
-  HttpStatus,
   NotFoundException,
   ParseUUIDPipe,
   Put,
-  Res,
   UseInterceptors,
   UsePipes,
   ValidationPipe,
+  HttpCode,
 } from '@nestjs/common';
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
@@ -62,17 +61,14 @@ export class TracksController {
   }
 
   @Delete(':id')
-  async remove(
-    @Param('id', new ParseUUIDPipe()) id: string,
-    @Res() res: Response,
-  ) {
+  @HttpCode(204)
+  async remove(@Param('id', new ParseUUIDPipe()) id: string) {
     const deletedTrack = await this.tracksService.remove(id);
 
     if (deletedTrack === null) {
       throw new NotFoundException();
     }
 
-    res.status(HttpStatus.NO_CONTENT).json();
     return;
   }
 }
