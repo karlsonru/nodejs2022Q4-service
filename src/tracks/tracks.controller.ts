@@ -38,7 +38,7 @@ export class TracksController {
 
   @Get(':id')
   async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    const track = this.tracksService.findOne(id);
+    const track = await this.tracksService.findOne(id);
 
     if (!track) {
       throw new NotFoundException();
