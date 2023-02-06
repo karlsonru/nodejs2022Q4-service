@@ -42,6 +42,13 @@ export class ArtistsService {
 
     if (idx === -1) return null;
 
+    const artist = await this.db.artists[idx];
+    for (const track of this.db.tracks) {
+      if (track.artistId !== artist.id) continue;
+
+      track.artistId = null;
+    }
+
     return await this.db.artists.splice(idx, 1);
   }
 }
