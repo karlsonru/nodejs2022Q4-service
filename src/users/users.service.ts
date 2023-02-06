@@ -32,7 +32,7 @@ export class UsersService {
       return false;
     }
 
-    user.password = updateUserDto.password;
+    user.password = updateUserDto.newPassword;
     user.version += 1;
     user.updatedAt = Date.now();
 
