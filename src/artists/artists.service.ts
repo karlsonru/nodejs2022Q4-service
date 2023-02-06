@@ -42,11 +42,24 @@ export class ArtistsService {
 
     if (idx === -1) return null;
 
-    const artist = await this.db.artists[idx];
     for (const track of this.db.tracks) {
-      if (track.artistId !== artist.id) continue;
+      if (track.artistId !== id) continue;
 
       track.artistId = null;
+    }
+
+    for (const album of this.db.albums) {
+      if (album.artistId !== id) continue;
+
+      album.artistId = null;
+    }
+
+    const favIdx = await this.db.favorites.artists.findIndex(
+      (artistFav) => artistFav.id === id,
+    );
+
+    if (favIdx > -1) {
+      await this.db.favorites.artists.splice(favIdx, 1);
     }
 
     return await this.db.artists.splice(idx, 1);

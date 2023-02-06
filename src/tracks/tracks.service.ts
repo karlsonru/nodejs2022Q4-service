@@ -45,6 +45,14 @@ export class TracksService {
       return null;
     }
 
+    const favIdx = await this.db.favorites.tracks.findIndex(
+      (track) => track.id === id,
+    );
+
+    if (favIdx > -1) {
+      await this.db.favorites.tracks.splice(favIdx, 1);
+    }
+
     return await this.db.tracks.splice(idx, 1);
   }
 }
