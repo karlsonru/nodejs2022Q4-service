@@ -55,6 +55,13 @@ export class AlbumsService {
 
     if (idx === -1) return null;
 
+    const album = await this.db.albums[idx];
+    for (const track of this.db.tracks) {
+      if (track.albumId !== album.id) continue;
+
+      track.albumId = null;
+    }
+
     return await this.db.albums.splice(idx, 1);
   }
 }
