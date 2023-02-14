@@ -1,5 +1,25 @@
 # Home Library Service
 
+## Запуск в контейнере 
+У вас должен быть установлен Docker:
+[Установка для Windows](https://docs.docker.com/desktop/install/windows-install/)
+[Установка для Linux](https://docs.docker.com/desktop/install/linux-install/)
+[Установка для Mac](https://docs.docker.com/desktop/install/mac-install/)
+
+## 
+Запустите Docker после установки
+
+## 
+Для запуска контейнера введите команду и привяжите порты
+```
+docker run -d -p 80:4000 {containerId} 
+```
+
+##
+Отправьте запрос из браузера на localhost 
+
+
+
 ## Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).

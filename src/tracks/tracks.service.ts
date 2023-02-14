@@ -1,4 +1,4 @@
-import { database } from '../database/database';
+import { database } from '../../database/database';
 import { Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
