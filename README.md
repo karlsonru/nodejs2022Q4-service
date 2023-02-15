@@ -10,6 +10,12 @@
 Запустите Docker после установки
 
 ## 
+Скачайте образ с помощью комнады
+```
+docker pull kalrsonru/node-web-app
+```
+
+## 
 Для запуска контейнера введите команду и привяжите порты
 ```
 docker run -dp 4000:4000 kalrsonru/node-web-app
