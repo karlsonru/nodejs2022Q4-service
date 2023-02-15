@@ -1,0 +1,23 @@
+services:
+  node-web-app:
+    image: node:18-alpine
+    restart: always
+    command: npm ci && npm run start:dev
+    ports:
+      - ${PORT}:${PORT}
+    working_dir: /app
+    volumes:
+      - ./:/app
+    environment:
+      - PORT=${PORT}
+
+  postgres:
+    image: postgres:alpine
+    restart: always
+    volumes:
+      - docker-db:/var/lib/db
+    environment:
+      - POSTGRES_PASSWORD={POSTGRES_PASSWORD}
+
+volumes:
+  docker-db:

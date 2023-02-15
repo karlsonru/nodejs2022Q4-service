@@ -12,13 +12,14 @@
 ## 
 Для запуска контейнера введите команду и привяжите порты
 ```
-docker run -d -p 80:4000 {containerId} 
+docker run -dp 4000:4000 kalrsonru/node-web-app
 ```
 
 ##
-Отправьте запрос из браузера на localhost 
+Отправьте запрос из браузера на localhost:4000 
 
 
+## Локальная установка
 
 ## Prerequisites
 

@@ -1,5 +1,5 @@
 import { Exclude } from 'class-transformer';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'node:crypto';
 
 export class User {
   id: string; // uuid v4
@@ -15,7 +15,7 @@ export class User {
     this.login = login;
     this.password = password;
 
-    this.id = uuidv4();
+    this.id = randomUUID();
     this.version = 1;
     this.createdAt = Date.now();
     this.updatedAt = Date.now();
