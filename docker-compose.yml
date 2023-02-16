@@ -6,9 +6,9 @@ services:
     command: npm ci && npm run start:prod
     ports:
       - ${PORT}:${PORT}
-    working_dir: /app
+    working_dir: /usr/app
     volumes:
-      - ./:/app
+      - ./:/usr/app/:rw
     environment:
       - PORT=${PORT}
     depends_on:
@@ -23,4 +23,4 @@ services:
       - POSTGRES_PASSWORD={POSTGRES_PASSWORD}
 
 volumes:
-  docker-db:
+  docker-db: {}

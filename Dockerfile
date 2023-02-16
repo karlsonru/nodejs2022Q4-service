@@ -1,6 +1,5 @@
 FROM node:18.14-alpine
 WORKDIR /usr/app/
-VOLUME [ "I:\Volume" ]
 
 COPY package.json package-lock.json ./
 RUN npm ci
