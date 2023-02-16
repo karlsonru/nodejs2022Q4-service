@@ -1,30 +1,36 @@
-import { database } from '../../database/database';
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm/dist/common';
+import { Repository } from 'typeorm/repository/Repository';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  private readonly db = database;
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const newUser = new User(createUserDto);
-    await this.db.users.push(newUser);
+    const newUser = new User();
+    newUser.login = createUserDto.login;
+    newUser.password = createUserDto.password;
+    await this.usersRepository.save(newUser);
     return newUser;
   }
 
   async findAll() {
-    return await this.db.users;
+    return await this.usersRepository.find({});
   }
 
   async findOne(id: string) {
-    const user = await this.db.users.find((user) => user.id === id);
+    const user = await this.usersRepository.findOneBy({ id });
     return user;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.db.users.find((user) => user.id === id);
+    const user = await this.usersRepository.findOneBy({ id });
 
     if (!user) return null;
 
@@ -40,10 +46,6 @@ export class UsersService {
   }
 
   async remove(id: string) {
-    const idx = await this.db.users.findIndex((user) => user.id === id);
-
-    if (idx === -1) return null;
-
-    return await this.db.users.splice(idx, 1);
+    await this.usersRepository.delete(id);
   }
 }
