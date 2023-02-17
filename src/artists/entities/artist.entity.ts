@@ -1,13 +1,13 @@
-import { randomUUID } from 'node:crypto';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity()
 export class Artist {
+  @PrimaryGeneratedColumn('uuid')
   id: string; // uuid v4
-  name: string;
-  grammy: boolean;
 
-  constructor({ name, grammy }) {
-    this.id = randomUUID();
-    this.name = name;
-    this.grammy = grammy;
-  }
+  @Column()
+  name: string;
+
+  @Column()
+  grammy: boolean;
 }

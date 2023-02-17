@@ -13,9 +13,8 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const newUser = new User();
-    newUser.login = createUserDto.login;
-    newUser.password = createUserDto.password;
+    const newUser = this.usersRepository.create(createUserDto);
+
     await this.usersRepository.save(newUser);
     return newUser;
   }
@@ -38,14 +37,21 @@ export class UsersService {
       return false;
     }
 
-    user.password = updateUserDto.newPassword;
-    user.version += 1;
-    user.updatedAt = Date.now();
+    await this.usersRepository.update(id, {
+      password: updateUserDto.newPassword,
+      updatedAt: new Date(),
+    });
 
-    return user;
+    const updatedUser = await this.usersRepository.findOneBy({ id });
+
+    return updatedUser;
   }
 
   async remove(id: string) {
-    await this.usersRepository.delete(id);
+    const user = await this.usersRepository.findOneBy({ id });
+
+    if (!user) return null;
+
+    return await this.usersRepository.delete(id);
   }
 }
