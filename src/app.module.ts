@@ -21,11 +21,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: 'localhost',
+        host: 'postgres',
         port: configService.get('POSTGRES_PORT'),
         username: configService.get('POSTGRES_USER'),
         password: configService.get('POSTGRES_PASSWORD'),
-        retryAttempts: 2,
+        retryAttempts: 4,
         autoLoadEntities: true,
         synchronize: true,
       }),
@@ -39,7 +39,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   controllers: [AppController],
   providers: [AppService],
 })
-
 export class AppModule {
   constructor(private dataSource: DataSource) {}
 }

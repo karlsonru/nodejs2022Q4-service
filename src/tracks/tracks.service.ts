@@ -1,58 +1,50 @@
-import { database } from '../../database/database';
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './entities/track.entity';
 
 @Injectable()
 export class TracksService {
-  private readonly db = database;
+  constructor(
+    @InjectRepository(Track)
+    private tracksRepository: Repository<Track>,
+  ) {}
 
   async create(createTrackDto: CreateTrackDto) {
-    const newTrack = new Track(createTrackDto);
-    await this.db.tracks.push(newTrack);
+    const newTrack = this.tracksRepository.create(createTrackDto);
+    await this.tracksRepository.save(newTrack);
     return newTrack;
   }
 
   async findAll() {
-    return await this.db.tracks;
+    return await this.tracksRepository.find({});
   }
 
   async findOne(id: string) {
-    const track = await this.db.tracks.find((track) => track.id === id);
+    const track = await this.tracksRepository.findOneBy({ id });
     return track;
   }
 
   async update(id: string, updateTrackDto: UpdateTrackDto) {
-    const idx = await this.db.tracks.findIndex((track) => track.id === id);
+    const track = await this.tracksRepository.findOneBy({ id });
 
-    if (idx === -1) {
-      return null;
-    }
+    if (!track) return null;
 
-    const track = this.db.tracks[idx];
-    for (const [key, value] of Object.entries(updateTrackDto)) {
-      track[key] = value;
-    }
+    const updatedTrack = await this.tracksRepository.save({
+      id,
+      ...updateTrackDto,
+    });
 
-    return track;
+    return updatedTrack;
   }
 
   async remove(id: string) {
-    const idx = await this.db.tracks.findIndex((track) => track.id === id);
+    const track = await this.tracksRepository.findOneBy({ id });
 
-    if (idx === -1) {
-      return null;
-    }
+    if (!track) return null;
 
-    const favIdx = await this.db.favorites.tracks.findIndex(
-      (track) => track.id === id,
-    );
-
-    if (favIdx > -1) {
-      await this.db.favorites.tracks.splice(favIdx, 1);
-    }
-
-    return await this.db.tracks.splice(idx, 1);
+    return await this.tracksRepository.delete(id);
   }
 }

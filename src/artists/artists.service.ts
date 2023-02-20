@@ -29,11 +29,16 @@ export class ArtistsService {
   }
 
   async update(id: string, updateArtistDto: UpdateArtistDto) {
-    await this.artistRepository.update(id, updateArtistDto);
-
     const artist = await this.artistRepository.findOneBy({ id });
 
-    return artist;
+    if (!artist) return;
+
+    const updatedArtist = await this.artistRepository.save({
+      id,
+      ...updateArtistDto,
+    });
+
+    return updatedArtist;
   }
 
   async remove(id: string) {
@@ -42,9 +47,5 @@ export class ArtistsService {
     if (!artist) return null;
 
     return await this.artistRepository.delete(id);
-
-    // удалить из адьбомов
-    // удалить из треков
-    // удалить из fav
   }
 }

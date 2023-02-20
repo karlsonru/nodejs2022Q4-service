@@ -17,7 +17,6 @@ import {
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { Response } from 'express';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('album')

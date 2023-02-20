@@ -1,78 +1,100 @@
 import { Injectable } from '@nestjs/common';
-import { database } from '../../database/database';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class FavoritesService {
-  private readonly db = database;
+  constructor(
+    @InjectDataSource()
+    private dataSource: DataSource,
+  ) {}
 
   async findAll() {
+    const excludeFn = function (obj) {
+      delete obj['favorite'];
+      return obj;
+    };
+
+    const artists = this.dataSource.getRepository('Artist');
+    const albums = this.dataSource.getRepository('Album');
+    const tracks = this.dataSource.getRepository('Track');
+
     return {
-      artists: await this.db.favorites.artists.map((id) =>
-        this.db.artists.find((artist) => artist.id === id),
-      ),
-      albums: await this.db.favorites.albums.map((id) =>
-        this.db.albums.find((album) => album.id === id),
-      ),
-      tracks: await this.db.favorites.tracks.map((id) =>
-        this.db.tracks.find((track) => track.id === id),
-      ),
+      artists: (await artists.findBy({ favorite: true })).map(excludeFn),
+      albums: (await albums.findBy({ favorite: true })).map(excludeFn),
+      tracks: (await tracks.findBy({ favorite: true })).map(excludeFn),
     };
   }
 
   async addTrack(id: string) {
-    const idx = await this.db.tracks.findIndex((track) => track.id === id);
+    const tracks = this.dataSource.getRepository('Track');
+    const track = await tracks.findOneBy({ id });
 
-    if (idx === -1) return null;
+    if (!track) return null;
 
-    await this.db.favorites.tracks.push(id);
-    return this.db.favorites.tracks.length;
+    await tracks.update(id, {
+      favorite: true,
+    });
+
+    return track;
   }
 
   async removeTrack(id: string) {
-    const idx = await this.db.favorites.tracks.findIndex(
-      (trackId) => trackId === id,
-    );
+    const tracks = this.dataSource.getRepository('Track');
+    const track = await tracks.findOneBy({ id });
 
-    if (idx === -1) return null;
+    if (!track) return null;
 
-    return await this.db.favorites.tracks.splice(idx, 1);
+    return await tracks.update(id, {
+      favorite: false,
+    });
   }
 
   async addAlbum(id: string) {
-    const idx = await this.db.albums.findIndex((album) => album.id === id);
+    const albums = this.dataSource.getRepository('Album');
+    const album = await albums.findOneBy({ id });
 
-    if (idx === -1) return null;
+    if (!album) return null;
 
-    await this.db.favorites.albums.push(id);
-    return this.db.favorites.albums.length;
+    await albums.update(id, {
+      favorite: true,
+    });
+
+    return album;
   }
 
   async removeAlbum(id: string) {
-    const idx = await this.db.favorites.albums.findIndex(
-      (albumId) => albumId === id,
-    );
+    const albums = this.dataSource.getRepository('Album');
+    const album = await albums.findOneBy({ id });
 
-    if (idx === -1) return null;
+    if (!album) return null;
 
-    return await this.db.favorites.albums.splice(idx, 1);
+    return await albums.update(id, {
+      favorite: false,
+    });
   }
 
   async addArtist(id: string) {
-    const idx = await this.db.artists.findIndex((artist) => artist.id === id);
+    const artists = this.dataSource.getRepository('Artist');
+    const artist = await artists.findOneBy({ id });
 
-    if (idx === -1) return null;
+    if (!artist) return null;
 
-    await this.db.favorites.artists.push(id);
-    return this.db.favorites.artists.length;
+    await artists.update(id, {
+      favorite: true,
+    });
+
+    return artist;
   }
 
   async removeArtist(id: string) {
-    const idx = await this.db.favorites.artists.findIndex(
-      (artistId) => artistId === id,
-    );
+    const artists = this.dataSource.getRepository('Artist');
+    const artist = await artists.findOneBy({ id });
 
-    if (idx === -1) return null;
+    if (!artist) return null;
 
-    return await this.db.favorites.artists.splice(idx, 1);
+    return await artists.update(id, {
+      favorite: false,
+    });
   }
 }

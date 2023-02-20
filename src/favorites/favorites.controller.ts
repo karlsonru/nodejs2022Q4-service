@@ -2,14 +2,11 @@ import {
   Controller,
   Get,
   Post,
-  Body,
-  Patch,
   Param,
   Delete,
   ParseUUIDPipe,
   UnprocessableEntityException,
   NotFoundException,
-  HttpStatus,
   HttpCode,
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
