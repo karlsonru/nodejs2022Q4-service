@@ -1,31 +1,52 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-auth.dto';
-import { User } from './entities/auth.entity';
 import { ConfigService } from '@nestjs/config';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
+import { UsersService } from '../users/users.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
     private configService: ConfigService,
+    private jwtService: JwtService,
+    private usersService: UsersService,
   ) {}
 
-  async create(createAuthDto: CreateUserDto) {
-    const hash = await bcrypt.hash(
-      createAuthDto.password,
-      this.configService.get('CRYPT_SALT'),
-    );
+  async validateUser(username: string, pass: string): Promise<any> {
+    const user = await this.usersService.findOne(username);
+    if (user && user.password === pass) {
+      const { password, ...result } = user;
+      return result;
+    }
+    return null;
+  }
 
-    const newUser = this.usersRepository.create({
+  async signup(createAuthDto: CreateUserDto) {
+    const salt = await bcrypt.genSalt(+this.configService.get('CRYPT_SALT'));
+    const hash = await bcrypt.hash(createAuthDto.password, salt);
+
+    const newUser = await this.usersService.create({
       login: createAuthDto.login,
       password: hash,
     });
 
-    await this.usersRepository.save(newUser);
-    return newUser;
+    return { id: newUser.id };
+  }
+
+  async login(createAuthDto: CreateUserDto) {
+    const user = await this.usersService.findOneBy({
+      login: createAuthDto.login,
+    });
+
+    if (!user) {
+      return { accessToken: null };
+    }
+
+    const payload = { login: user.login, sub: user.id };
+
+    return {
+      accessToken: this.jwtService.sign(payload),
+    };
   }
 }

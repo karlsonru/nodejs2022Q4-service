@@ -8,7 +8,7 @@ import { LogLevel } from '@nestjs/common';
 dotenv.config();
 
 const PORT = process.env.PORT ?? 4000;
-const LOG_LEVEL = process.env.PORT ?? 5;
+const LOG_LEVEL = process.env.LOG_LEVEL ?? 5;
 const logLevels: LogLevel[] = ['log', 'error', 'warn', 'debug', 'verbose'];
 
 async function bootstrap() {
@@ -21,7 +21,7 @@ async function bootstrap() {
     }),
   );
   //app.useLogger(app.get(CustomLogger));
-  app.useLogger(new CustomLogger());
+  //app.useLogger(new CustomLogger());
   await app.listen(PORT);
   console.log(`Server is running on port ${PORT}`);
 }

@@ -8,16 +8,17 @@ export class AuthController {
 
   @Post('/signup')
   signup(@Body() createAuthDto: CreateUserDto) {
-    return this.authService.create(createAuthDto);
+    return this.authService.signup(createAuthDto);
   }
 
   @Post('/login')
   login(@Body() createAuthDto: CreateUserDto) {
-    return this.authService.create(createAuthDto);
+    console.log('login under guards');
+    return this.authService.login(createAuthDto);
   }
 
-  @Post('/login')
+  @Post('/refresh')
   refresh(@Body() createAuthDto: CreateUserDto) {
-    return this.authService.create(createAuthDto);
+    return this.authService.signup(createAuthDto);
   }
 }
