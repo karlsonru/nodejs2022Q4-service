@@ -47,3 +47,25 @@ npm run test
 
 ## Well-done! Graize mille и возьмите печеньку :)
 
+
+## ДЛЯ ТЕСТИРОВАНИЯ КОНТЕНЕЙРОВ БЕЗ DOCKER-COMPOSE
+
+## Создайте образ postgres с помощью команды
+```
+docker build -t postgres ./database
+```
+
+## Создайте сеть
+```
+docker network create -d bridge my-network
+```
+
+## Запустите postgres
+```
+docker run -dp 5432:5432 -e POSTGRES_PASSWORD=secret --network my-network postgres
+```
+
+## Скачайте образ и запустите с удалённого репозитория:
+```
+docker run -dp 4000:4000 --network my-network kalrsonru/node-web-app
+```
