@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
+<<<<<<< HEAD
 import { LoggerModule } from './logger/logger.module';
 import { UsersModule } from './users/users.module';
 import { ArtistsModule } from './artists/artists.module';
@@ -46,3 +47,11 @@ import { AuthModule } from './auth/auth.module';
 export class AppModule {
   constructor(private dataSource: DataSource) {}
 }
+=======
+@Module({
+  imports: [],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+>>>>>>> 2e92b263cdcbc29a187b0409783d8d6fb7c7ade2
