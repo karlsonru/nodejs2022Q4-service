@@ -1,67 +1,51 @@
-import { database } from '../../database/database';
 import { Injectable } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { Artist } from './entities/artist.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ArtistsService {
-  private readonly db = database;
+  constructor(
+    @InjectRepository(Artist)
+    private artistRepository: Repository<Artist>,
+  ) {}
 
   async create(createArtistDto: CreateArtistDto) {
-    const newArtist = new Artist(createArtistDto);
-    await this.db.artists.push(newArtist);
+    const newArtist = this.artistRepository.create(createArtistDto);
+    await this.artistRepository.save(newArtist);
+
     return newArtist;
   }
 
   async findAll() {
-    return await this.db.artists;
+    return await this.artistRepository.find({});
   }
 
   async findOne(id: string) {
-    const artist = await this.db.artists.find((artist) => artist.id === id);
+    const artist = await this.artistRepository.findOneBy({ id });
     return artist;
   }
 
   async update(id: string, updateArtistDto: UpdateArtistDto) {
-    const idx = await this.db.artists.findIndex((artist) => artist.id === id);
+    const artist = await this.artistRepository.findOneBy({ id });
 
-    if (idx === -1) return null;
+    if (!artist) return;
 
-    const artist = this.db.artists[idx];
+    const updatedArtist = await this.artistRepository.save({
+      id,
+      ...updateArtistDto,
+    });
 
-    for (const [key, value] of Object.entries(updateArtistDto)) {
-      artist[key] = value;
-    }
-
-    return artist;
+    return updatedArtist;
   }
 
   async remove(id: string) {
-    const idx = await this.db.artists.findIndex((artist) => artist.id === id);
+    const artist = await this.artistRepository.findOneBy({ id });
 
-    if (idx === -1) return null;
+    if (!artist) return null;
 
-    for (const track of this.db.tracks) {
-      if (track.artistId !== id) continue;
-
-      track.artistId = null;
-    }
-
-    for (const album of this.db.albums) {
-      if (album.artistId !== id) continue;
-
-      album.artistId = null;
-    }
-
-    const favIdx = await this.db.favorites.artists.findIndex(
-      (artistFav) => artistFav.id === id,
-    );
-
-    if (favIdx > -1) {
-      await this.db.favorites.artists.splice(favIdx, 1);
-    }
-
-    return await this.db.artists.splice(idx, 1);
+    return await this.artistRepository.delete(id);
   }
 }

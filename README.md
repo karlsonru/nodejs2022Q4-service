@@ -1,105 +1,71 @@
 # Home Library Service
 
-## Запуск в контейнере 
-У вас должен быть установлен Docker:
-[Установка для Windows](https://docs.docker.com/desktop/install/windows-install/)
-[Установка для Linux](https://docs.docker.com/desktop/install/linux-install/)
-[Установка для Mac](https://docs.docker.com/desktop/install/mac-install/)
-
-## 
-Запустите Docker после установки
-
-## 
-Скачайте образ с помощью комнады
-```
-docker pull kalrsonru/node-web-app
-```
-
-## 
-Для запуска контейнера введите команду и привяжите порты
-```
-docker run -dp 4000:4000 kalrsonru/node-web-app
-```
-
-##
-Отправьте запрос из браузера на localhost:4000 
-
-
-## Локальная установка
-
-## Prerequisites
-
-- Git - [Download & Install Git](https://git-scm.com/downloads).
-- Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
-
-## Downloading
+## Скачайте репозиторий локально
 
 ```
 git clone {repository URL}
 ```
 
-## Installing NPM modules
+## Установите NPM модули
 
 ```
 npm install
 ```
 
-## Running application in development mode
+## Установите Docker 
+Для запуска контейнеров должен быть установлен Docker:
+- [Установка для Windows](https://docs.docker.com/desktop/install/windows-install/)
+- [Установка для Linux](https://docs.docker.com/desktop/install/linux-install/)
+- [Установка для Mac](https://docs.docker.com/desktop/install/mac-install/)
 
+Запустите Docker как сервис после установки. 
+
+
+## Запуск приложения
+1. Установите переменные в .env файле или используйте текущие
+
+2. Соберите приложение через docker compose выполнив команду:
 ```
-npm run start:dev
+docker compose build
 ```
 
-## Running application
-
+3. Запустите приложение через docker compose выполнив команду:
 ```
-npm start
+docker compose up
 ```
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+## **ВАЖНО!**
+Контейнер с nest приложением может запускать долго. Причина мне пока не понятна, к сожалению. 
+У меня запуск nest приложения в контейнере занимал 5 - 10 минут. Пожалуйста, дождитесь запуска. 
+В консоле в вашем терминале должны появится логи запущенного nest приложения. 
 
-## Testing
-
-After application running open new terminal and enter:
-
-To run all tests without authorization
-
+## Тестирование
+Запустите тесты с помощью команды
 ```
 npm run test
+``` 
+
+## Well-done! Graize mille и возьмите печеньку :)
+
+
+## ДЛЯ ТЕСТИРОВАНИЯ КОНТЕНЕЙРОВ БЕЗ DOCKER-COMPOSE
+
+## Создайте образ postgres с помощью команды
+```
+docker build -t postgres ./database
 ```
 
-To run only one of all test suites
-
+## Создайте сеть
 ```
-npm run test -- <path to suite>
-```
-
-To run all test with authorization
-
-```
-npm run test:auth
+docker network create -d bridge my-network
 ```
 
-To run only specific test suite with authorization
-
+## Запустите postgres
 ```
-npm run test:auth -- <path to suite>
-```
-
-### Auto-fix and format
-
-```
-npm run lint
+docker run -dp 5432:5432 -e POSTGRES_PASSWORD=secret --network my-network postgres
 ```
 
+## Скачайте образ и запустите с удалённого репозитория:
 ```
-npm run format
+docker run -dp 4000:4000 --network my-network kalrsonru/node-web-app
 ```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
