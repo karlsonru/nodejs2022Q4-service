@@ -1,8 +1,7 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { LoggerModule } from './logger/logger.module';
 import { UsersModule } from './users/users.module';
 import { ArtistsModule } from './artists/artists.module';
 import { TracksModule } from './tracks/tracks.module';
@@ -12,6 +11,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { LoggerModule } from './logger/logger.module';
+import { LoggerMiddleware } from './middlewares/logger.middleware';
 
 @Module({
   imports: [
@@ -33,7 +34,7 @@ import { AuthModule } from './auth/auth.module';
       }),
     }),
     AuthModule,
-    //LoggerModule,
+    LoggerModule,
     UsersModule,
     ArtistsModule,
     TracksModule,
@@ -44,5 +45,9 @@ import { AuthModule } from './auth/auth.module';
   providers: [AppService],
 })
 export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+
   constructor(private dataSource: DataSource) {}
 }

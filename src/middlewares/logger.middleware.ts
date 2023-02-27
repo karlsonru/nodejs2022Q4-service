@@ -4,10 +4,16 @@ import { Request, Response, NextFunction } from 'express';
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    console.log('URL: ' + req.url);
-    console.log('Params: ' + req.params.toString());
-    console.log('Body: ' + req.body.toString());
-    console.log('Response code: ' + res.statusCode);
+    const { url, params, body } = req;
+
+    res.on('close', () => {
+      console.log(
+        `Request ${url}, ${JSON.stringify(params)} ${JSON.stringify(body)}`,
+      );
+      const { statusCode } = res;
+      console.log(`Response ${statusCode}`);
+    });
+
     next();
   }
 }

@@ -1,29 +1,33 @@
 import { ConsoleLogger, Injectable, Scope } from '@nestjs/common';
+import { writeFile } from 'fs/promises';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class CustomLogger extends ConsoleLogger {
-  /**
- * Write a 'log' level log.
- */
-  log(message: any, ...optionalParams: any[]) {}
+  private logName = 'logfile.log';
+  private logOptions = { flag: 'a' };
 
-  /**
-  * Write an 'error' level log.
-  */
-  error(message: any, ...optionalParams: any[]) {}
+  async writeLog(level, message) {
+    const text = new Date() + ' ' + level + ': ' + message + '\n';
+    await writeFile(this.logName, text, this.logOptions);
+  }
 
-  /**
-  * Write a 'warn' level log.
-  */
-  warn(message: any, ...optionalParams: any[]) {}
+  async log(message: string) {
+    await this.writeLog('LOG', message);
+  }
 
-  /**
-  * Write a 'debug' level log.
-  */
-  debug(message: any, ...optionalParams: any[]) {}
+  async error(message: string) {
+    await this.writeLog('ERROR', message);
+  }
 
-  /**
-  * Write a 'verbose' level log.
-  */
-  verbose(message: any, ...optionalParams: any[]) {}
+  async warn(message: string) {
+    await this.writeLog('WARN', message);
+  }
+
+  async debug(message: string) {
+    await this.writeLog('DEBUG', message);
+  }
+
+  async verbose(message: string) {
+    await this.writeLog('VERBOSE', message);
+  }
 }

@@ -2,8 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as dotenv from 'dotenv';
-import { CustomLogger } from './logger/logger.service';
+// import { CustomLogger } from './logger/logger.service';
 import { LogLevel } from '@nestjs/common';
+import { CustomLogger } from './logger/logger.service';
 
 dotenv.config();
 
@@ -20,8 +21,9 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  //app.useLogger(app.get(CustomLogger));
-  //app.useLogger(new CustomLogger());
+
+  app.useLogger(new CustomLogger());
+
   await app.listen(PORT);
   console.log(`Server is running on port ${PORT}`);
 }
